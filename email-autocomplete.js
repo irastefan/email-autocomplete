@@ -34,10 +34,10 @@ class EmailAutocomplete {
 
     getCurrentDomainList() {
         return this.domains.filter(
-            domain => 
-            domain.slice(0, this.getDomain(this.getInputValue()).length)
-             === 
-            this.getDomain(this.getInputValue()).toLowerCase()
+            domain =>
+                domain.slice(0, this.getDomain(this.getInputValue()).length)
+                ===
+                this.getDomain(this.getInputValue()).toLowerCase()
         );
     }
 
@@ -52,6 +52,8 @@ class EmailAutocomplete {
             return false;
         }
 
+        this.input.setAttribute('autocomplete', 'off');
+
         const domainList = document.createElement('div');
         domainList.setAttribute('id', 'email-domains');
         this.input.parentNode.appendChild(domainList);
@@ -61,33 +63,28 @@ class EmailAutocomplete {
         if (userDomain.length > 0) {
             this.domains.forEach(domain => {
                 if (domain.slice(0, userDomain.length) === userDomain.toLowerCase()) {
-                    let domainItem = document.createElement("DIV");
-                    domainItem.innerHTML += domain;
-                    domainList.appendChild(domainItem);
-
-                    domainItem.addEventListener('click', () => {
-                        this.setInputValue(domainItem.innerText);
-                    })
+                    this.createDomainItem(domainList, domain);
                 }
+            });
+        } else {
+            this.domains.forEach(domain => {
+                this.createDomainItem(domainList, domain);
             });
         }
     }
 
     onKeyDown(e) {
-        //key down
-        if (e.keyCode == 40) {
-            if (this.currentFocus < this.getCurrentDomainList().length-1) {
-                this.currentFocus++;
-            } else this.currentFocus = 0;
-            this.removeActiveDomain();
-            document.querySelectorAll('#email-domains div')[this.currentFocus].classList.add('active');
-        }
-        //key up
-        if (e.keyCode == 38) { 
-            if (this.currentFocus > 0) {
-                this.currentFocus--;
-                console.log(this.currentFocus)
-            } else this.currentFocus = this.getCurrentDomainList().length-1;
+        //key down / up
+        if (e.keyCode == 40 || e.keyCode == 38) {
+            if (e.keyCode == 40) {
+                if (this.currentFocus < this.getCurrentDomainList().length-1) {
+                    this.currentFocus++;
+                } else this.currentFocus = 0;
+            } else {
+                if (this.currentFocus > 0) {
+                    this.currentFocus--;
+                } else this.currentFocus = this.getCurrentDomainList().length-1;
+            }
             this.removeActiveDomain();
             document.querySelectorAll('#email-domains div')[this.currentFocus].classList.add('active');
         }
@@ -96,7 +93,17 @@ class EmailAutocomplete {
             e.preventDefault();
             this.setInputValue(this.domains[this.currentFocus]);
         }
-        
+
+    }
+
+    createDomainItem(domainList, domain) {
+        let domainItem = document.createElement("div");
+        domainItem.innerHTML = `<span>${this.getInputValue().split('@')[0]}@</span>${domain}`;
+        domainList.appendChild(domainItem);
+
+        domainItem.addEventListener('click', () => {
+            this.setInputValue(domain);
+        })
     }
 
     removeActiveDomain() {
@@ -111,8 +118,8 @@ class EmailAutocomplete {
     }
 }
 
-const inputEmail = document.querySelector(".email")
-
-const domains = ['google.com', 'gmail.com', 'gmail1.com', 'gmail2.com', 'yahoo.com']
-
-new EmailAutocomplete(inputEmail, domains)
+window.addEventListener("load", () => {
+    const inputEmail = document.querySelector("#billing_email")
+    const domains = ['gmail.com', 'yahoo.com', 'outlook.com', 'aol.com', 'icloud.com']
+    new EmailAutocomplete(inputEmail, domains)
+})
