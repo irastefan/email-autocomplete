@@ -1,9 +1,10 @@
 form {
+  position: relative;
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
-  position: relative;
   width: 300px;
+  margin: 100px auto;
 }
 form input {
   width: 100%;
@@ -13,13 +14,14 @@ form input {
   border-radius: 5px;
   font-size: 17px;
   line-height: 120%;
+  z-index: 1;
 }
 
 #email-domains {
   display: block;
   position: absolute;
   z-index: 1;
-  top: 30px;
+  top: 32px;
   left: 0;
   right: 0;
   border: 1px solid rgba(34, 42, 88, 0.3);
@@ -37,4 +39,19 @@ form input {
 }
 #email-domains div span {
   font-weight: 600;
+}
+
+.email-placeholder {
+  position: absolute;
+  left: 11px;
+  top: 6px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  color: #ccc;
+  font-size: 17px;
+  z-index: 1;
+}
+.email-placeholder span {
+  color: rgba(255, 255, 255, 0);
 }
