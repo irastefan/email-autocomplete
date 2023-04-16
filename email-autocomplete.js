@@ -34,16 +34,16 @@ class EmailAutocomplete {
         return true;
     }
 
-    getDomain(input) {
-        return input.split('@')[1].toLowerCase();
+    getDomain() {
+        return this.getInputValue().split('@')[1].toLowerCase();
     }
 
     getCurrentDomainList() {
         return this.domains.filter(
             domain =>
-                domain.slice(0, this.getDomain(this.getInputValue()).length)
+                domain.slice(0, this.getDomain().length)
                 ===
-                this.getDomain(this.getInputValue()).toLowerCase()
+                this.getDomain().toLowerCase()
         );
     }
 
@@ -69,22 +69,22 @@ class EmailAutocomplete {
             const domainList = document.createElement('div');
             domainList.setAttribute('id', 'email-domains');
             this.input.parentNode.appendChild(domainList);
-    
-            let userDomain = this.getDomain(this.getInputValue());
-    
+
+            let userDomain = this.getDomain();
+
             if (userDomain.length > 0) {
                 this.domains.forEach(domain => {
                     if (domain.slice(0, userDomain.length) === userDomain.toLowerCase()) {
                         this.createDomainItem(domainList, domain);
                     }
-                });
+                })
             } else {
                 this.domains.forEach(domain => {
                     this.createDomainItem(domainList, domain);
                 });
             }
-    
-            this.setPlaceholder();
+
+            if (this.getDomain()) this.setPlaceholder();
         }
     }
 
@@ -101,9 +101,9 @@ class EmailAutocomplete {
                         this.currentFocus--;
                     } else this.currentFocus = this.getCurrentDomainList().length-1;
                 }
-                
+
                 this.setPlaceholder();
-    
+
                 this.removeActiveDomain();
                 document.querySelectorAll('#email-domains div')[this.currentFocus].classList.add('active');
             }
@@ -135,19 +135,22 @@ class EmailAutocomplete {
 
     setPlaceholder() {
         this.removePlaceholder();
-
         const placeholder = document.createElement('div');
         placeholder.classList.add('email-placeholder');
         this.input.parentNode.appendChild(placeholder);
 
+        placeholder.addEventListener('click', () => {
+            this.input.focus()
+        })
+
         let currentFocus;
         if (this.currentFocus !== -1) currentFocus = this.currentFocus;
-            else currentFocus = 0;
+        else currentFocus = 0;
 
         if (document.querySelectorAll('#email-domains div').length > 0) {
             const currentDomain = document.querySelectorAll('#email-domains div')[currentFocus].innerText;
-            placeholder.innerHTML = 
-            `<span>${this.getInputValue()}</span>${currentDomain.substring(this.getInputValue().length, currentDomain.length)}`;
+            placeholder.innerHTML =
+                `<span>${this.getInputValue()}</span>${currentDomain.substring(this.getInputValue().length, currentDomain.length)}`;
         }
     }
 
@@ -167,16 +170,16 @@ class EmailAutocomplete {
 window.addEventListener("load", () => {
     const inputEmail = document.querySelector("#billing_email")
     const domains = [
-        'gmail.com', 
-        'yahoo.com', 
-        'outlook.com', 
-        'aol.com', 
-        'icloud.com', 
-        'hotmail.com', 
-        'allmail.net', 
-        'mac.com', 
-        'me.com', 
-        'msn.com', 
+        'gmail.com',
+        'yahoo.com',
+        'outlook.com',
+        'aol.com',
+        'icloud.com',
+        'hotmail.com',
+        'allmail.net',
+        'mac.com',
+        'me.com',
+        'msn.com',
         'att.net',
         'live.com',
         'ymail.com'
