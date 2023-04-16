@@ -17,11 +17,11 @@ class EmailAutocomplete {
     }
 
     setInputValue(domain) {
-        if (document.querySelector(".email-placeholder")) {
-            this.input.value = document.querySelector(".email-placeholder").innerText;
+        if (domain) {
+            this.input.value = this.input.value.split('@')[0] + '@' + domain;
         } else {
-            if (domain) {
-                this.input.value = this.input.value.split('@')[0] + '@' + domain;
+            if (document.querySelector(".email-placeholder") && document.querySelector(".email-placeholder").innerText) {
+                this.input.value = document.querySelector(".email-placeholder").innerText;
             }
         }
         this.closeList();
@@ -62,27 +62,30 @@ class EmailAutocomplete {
 
         this.input.setAttribute('autocomplete', 'off');
 
-        this,this.currentFocus = -1;
+        this.currentFocus = -1;
 
-        const domainList = document.createElement('div');
-        domainList.setAttribute('id', 'email-domains');
-        this.input.parentNode.appendChild(domainList);
+        if (this.getCurrentDomainList().length > 0) {
 
-        let userDomain = this.getDomain(this.getInputValue());
-
-        if (userDomain.length > 0) {
-            this.domains.forEach(domain => {
-                if (domain.slice(0, userDomain.length) === userDomain.toLowerCase()) {
+            const domainList = document.createElement('div');
+            domainList.setAttribute('id', 'email-domains');
+            this.input.parentNode.appendChild(domainList);
+    
+            let userDomain = this.getDomain(this.getInputValue());
+    
+            if (userDomain.length > 0) {
+                this.domains.forEach(domain => {
+                    if (domain.slice(0, userDomain.length) === userDomain.toLowerCase()) {
+                        this.createDomainItem(domainList, domain);
+                    }
+                });
+            } else {
+                this.domains.forEach(domain => {
                     this.createDomainItem(domainList, domain);
-                }
-            });
-        } else {
-            this.domains.forEach(domain => {
-                this.createDomainItem(domainList, domain);
-            });
+                });
+            }
+    
+            this.setPlaceholder();
         }
-
-        this.setPlaceholder();
     }
 
     onKeyDown(e) {
@@ -142,8 +145,9 @@ class EmailAutocomplete {
             else currentFocus = 0;
 
         if (document.querySelectorAll('#email-domains div').length > 0) {
+            const currentDomain = document.querySelectorAll('#email-domains div')[currentFocus].innerText;
             placeholder.innerHTML = 
-            `<span>${this.getInputValue()}</span>${document.querySelectorAll('#email-domains div')[currentFocus].innerText.substring(this.getInputValue().length, document.querySelectorAll('#email-domains div')[currentFocus].innerText.length)}`;
+            `<span>${this.getInputValue()}</span>${currentDomain.substring(this.getInputValue().length, currentDomain.length)}`;
         }
     }
 
@@ -162,6 +166,20 @@ class EmailAutocomplete {
 
 window.addEventListener("load", () => {
     const inputEmail = document.querySelector("#billing_email")
-    const domains = ['gmail.com', 'yahoo.com', 'outlook.com', 'aol.com', 'icloud.com']
+    const domains = [
+        'gmail.com', 
+        'yahoo.com', 
+        'outlook.com', 
+        'aol.com', 
+        'icloud.com', 
+        'hotmail.com', 
+        'allmail.net', 
+        'mac.com', 
+        'me.com', 
+        'msn.com', 
+        'att.net',
+        'live.com',
+        'ymail.com'
+    ];
     new EmailAutocomplete(inputEmail, domains)
 })

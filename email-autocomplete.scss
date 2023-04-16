@@ -17,7 +17,9 @@ form {
 }
 
 #email-domains {
-    display: block;
+    display: block;    
+    max-height: 105px;
+    overflow-y: scroll;
     position: absolute;
     z-index: 1;
     top: 32px;
