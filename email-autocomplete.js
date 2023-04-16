@@ -102,6 +102,10 @@ class EmailAutocomplete {
                     } else this.currentFocus = this.getCurrentDomainList().length-1;
                 }
 
+                if (document.querySelector('#email-domains')) {
+                    document.querySelector('#email-domains').scrollTo(0, this.currentFocus * 20)
+                }
+
                 this.setPlaceholder();
 
                 this.removeActiveDomain();
@@ -140,6 +144,7 @@ class EmailAutocomplete {
         this.input.parentNode.appendChild(placeholder);
 
         placeholder.addEventListener('click', () => {
+            this.setInputValue()
             this.input.focus()
         })
 
