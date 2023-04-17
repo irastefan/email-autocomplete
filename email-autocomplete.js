@@ -27,15 +27,15 @@ class EmailAutocomplete {
         this.closeList();
     }
 
-    isEmail(input) {
-        if (input.indexOf('@') === -1) {
+    isEmail() {
+        if (this.input.value.indexOf('@') === -1) {
             return false;
         }
         return true;
     }
 
     getDomain() {
-        return this.getInputValue().split('@')[1].toLowerCase();
+        return this.input.value.split('@')[1].toLowerCase();
     }
 
     getCurrentDomainList() {
@@ -55,7 +55,7 @@ class EmailAutocomplete {
             return false;
         }
 
-        if (!this.isEmail(this.getInputValue())) {
+        if (!this.isEmail()) {
             this.removePlaceholder();
             return false;
         }
@@ -68,7 +68,7 @@ class EmailAutocomplete {
 
             const domainList = document.createElement('div');
             domainList.setAttribute('id', 'email-domains');
-            this.input.parentNode.appendChild(domainList);
+            this.input.after(domainList);
 
             let userDomain = this.getDomain();
 
@@ -102,17 +102,17 @@ class EmailAutocomplete {
                     } else this.currentFocus = this.getCurrentDomainList().length-1;
                 }
 
-                if (document.querySelector('#email-domains')) {
-                    document.querySelector('#email-domains').scrollTo(0, this.currentFocus * 20)
-                }
-
                 this.setPlaceholder();
 
                 this.removeActiveDomain();
-                document.querySelectorAll('#email-domains div')[this.currentFocus].classList.add('active');
+
+                if (document.querySelector('#email-domains')) {
+                    document.querySelector('#email-domains').scrollTo(0, this.currentFocus * 20)
+                    document.querySelectorAll('#email-domains div')[this.currentFocus].classList.add('active');
+                }
             }
-            //key enter
-            if (e.keyCode == 13 || e.keyCode == 39) {
+            //key enter / tab
+            if (e.keyCode == 13 || e.keyCode == 9) {
                 e.preventDefault();
                 this.currentFocus = -1;
                 this.setInputValue(this.domains[this.currentFocus]);
@@ -124,7 +124,7 @@ class EmailAutocomplete {
     createDomainItem(domainList, domain) {
         let domainItem = document.createElement("div");
         domainItem.innerHTML = `<span>${this.getInputValue().split('@')[0]}@</span>${domain}`;
-        domainList.appendChild(domainItem);
+        domainList.append(domainItem);
 
         domainItem.addEventListener('click', () => {
             this.setInputValue(domain);
@@ -132,8 +132,9 @@ class EmailAutocomplete {
     }
 
     removePlaceholder() {
-        if (document.querySelector(".email-placeholder")) {
-            document.querySelector(".email-placeholder").parentNode.removeChild(document.querySelector(".email-placeholder"));
+        const emailPlaceholder = document.querySelector(".email-placeholder")
+        if (emailPlaceholder) {
+            emailPlaceholder.remove();
         }
     }
 
@@ -141,7 +142,7 @@ class EmailAutocomplete {
         this.removePlaceholder();
         const placeholder = document.createElement('div');
         placeholder.classList.add('email-placeholder');
-        this.input.parentNode.appendChild(placeholder);
+        this.input.after(placeholder);
 
         placeholder.addEventListener('click', () => {
             this.setInputValue()
@@ -167,27 +168,7 @@ class EmailAutocomplete {
 
     closeList() {
         let domains = document.getElementById('email-domains');
-        if (domains) domains.parentNode.removeChild(domains);
+        if (domains) domains.remove();
         this.removePlaceholder();
     }
 }
-
-window.addEventListener("load", () => {
-    const inputEmail = document.querySelector("#billing_email")
-    const domains = [
-        'gmail.com',
-        'yahoo.com',
-        'outlook.com',
-        'aol.com',
-        'icloud.com',
-        'hotmail.com',
-        'allmail.net',
-        'mac.com',
-        'me.com',
-        'msn.com',
-        'att.net',
-        'live.com',
-        'ymail.com'
-    ];
-    new EmailAutocomplete(inputEmail, domains)
-})

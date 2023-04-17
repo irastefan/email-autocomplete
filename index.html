@@ -8,9 +8,28 @@
 </head>
 <body>
 <form>
-    <input autocomplete="off" id="billing_email" type="email" value="" />
+    <input autocomplete="off" id="email" type="email" value="" />
 </form>
 
 <script src="email-autocomplete.js"></script>
+<script>
+    const inputEmail = document.querySelector("#email")
+    const domains = [
+        'gmail.com',
+        'yahoo.com',
+        'outlook.com',
+        'aol.com',
+        'icloud.com',
+        'hotmail.com',
+        'allmail.net',
+        'mac.com',
+        'me.com',
+        'msn.com',
+        'att.net',
+        'live.com',
+        'ymail.com'
+    ];
+    new EmailAutocomplete(inputEmail, domains)
+</script>
 </body>
 </html>
